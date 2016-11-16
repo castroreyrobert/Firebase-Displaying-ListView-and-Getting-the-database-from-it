@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "694557635491",
+    "firebase_url": "https://tasker-organizer-demo.firebaseio.com",
+    "project_id": "tasker-organizer-demo",
+    "storage_bucket": "tasker-organizer-demo.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:694557635491:android:c67a11a906eb5a25",
+        "android_client_info": {
+          "package_name": "com.example.castroreyrobert.travelorganizerfirebase"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "694557635491-03mco030aj5g60ccpo4i40up09vt6o8v.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.castroreyrobert.travelorganizerfirebase",
+            "certificate_hash": "4FCC5B909E8DDCC9D387DF95C27DB30A2FA6F14E"
+          }
+        },
+        {
+          "client_id": "694557635491-e65q7f5nuteltdj2ceo7gsjreatd18cs.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD7qYX2azWaGAUlG_bujR_26BP9IDWDpaA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "694557635491-e65q7f5nuteltdj2ceo7gsjreatd18cs.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

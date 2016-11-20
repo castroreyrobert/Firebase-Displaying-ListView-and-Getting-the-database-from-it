@@ -4,13 +4,18 @@ package com.example.castroreyrobert.travelorganizerfirebase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckedTextView;
 import android.widget.EditText;
 import android.widget.ListView;
+
 
 
 import com.google.firebase.database.ChildEventListener;
@@ -38,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
                 android.R.layout.simple_list_item_checked);
 
         lvThings.setAdapter(adapter);
+
 
         //Connect to the firebase database
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -87,6 +93,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 DatabaseReference childRef = myref.push();
                 childRef.setValue(etThings.getText().toString());
+
+                etThings.setText("");
             }
         });
 
@@ -94,21 +102,58 @@ public class MainActivity extends AppCompatActivity {
         lvThings.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Query myQuery = myref.orderByValue().equalTo((String)
-                        lvThings.getItemAtPosition(position));
-
+                //Check if the user clicks an item in the listView
                 CheckedTextView check = (CheckedTextView)view;
                 check.setChecked(!check.isChecked());
 
             }
         });
 
-        lvThings.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                return true;
-            }
-        });
+        registerForContextMenu(lvThings);
     }
 
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.long_press, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+
+        AdapterContextMenuInfo info = (AdapterContextMenuInfo)item.getMenuInfo();
+        int row = info.position;
+
+        //Connect to the firebase database
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+        //Get a reference to the todoItems child items in the database
+        final DatabaseReference myref = database.getReference("thingsToBring");
+
+
+        Object x = lvThings.getAdapter().getItem(row);
+
+         switch(item.getItemId()) {
+            case R.id.menu_delete:
+                //Deleting from the firebase
+                Query myQuery = myref.orderByValue().equalTo((String)x);
+                myQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.hasChildren()) {
+                            DataSnapshot firstChild = dataSnapshot.getChildren().iterator().next();
+                            firstChild.getRef().removeValue();
+                        }
+                    }
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+            break;
+        }
+        return super.onContextItemSelected(item);
+    }
 }

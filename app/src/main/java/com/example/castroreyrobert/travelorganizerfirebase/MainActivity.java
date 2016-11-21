@@ -1,6 +1,8 @@
 package com.example.castroreyrobert.travelorganizerfirebase;
 
 
+import android.app.ProgressDialog;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -29,11 +31,14 @@ import com.google.firebase.database.ValueEventListener;
 public class MainActivity extends AppCompatActivity {
 
     private ListView lvThings;
+    private ProgressDialog pDialog;
+    private EditText etThings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         lvThings = (ListView) findViewById(R.id.lvThings);
         Button btnAdd = (Button) findViewById(R.id.btnAdd);
@@ -44,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
 
         lvThings.setAdapter(adapter);
 
+        loadProgressDialog();
 
         //Connect to the firebase database
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -109,6 +115,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //Displaying the menu if the user long clicks the item
         registerForContextMenu(lvThings);
     }
 
@@ -153,7 +160,45 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
             break;
-        }
+             case R.id.menu_edit:
+                 Query myquery = myref.orderByValue().equalTo((String)x);
+                 myquery.addListenerForSingleValueEvent(new ValueEventListener() {
+                     @Override
+                     public void onDataChange(DataSnapshot dataSnapshot) {
+                         if (dataSnapshot.hasChildren()) {
+                             DataSnapshot firstChild = dataSnapshot.getChildren().iterator().next();
+                             firstChild.getRef().removeValue();
+                         }
+                     }
+                     @Override
+                     public void onCancelled(DatabaseError databaseError) {
+
+                     }
+                 });
+                 etThings = (EditText) findViewById(R.id.etThings);
+                 etThings.setText(x.toString());
+         }
         return super.onContextItemSelected(item);
     }
+
+    public void loadProgressDialog(){
+        pDialog = new ProgressDialog(this);
+        pDialog.setIndeterminate(true);
+        pDialog.setCancelable(false);
+        pDialog.setProgress(0);
+        pDialog.setMessage("Loading.....Please wait....");
+        pDialog.show();
+
+        Runnable progressRunnable = new Runnable() {
+
+            @Override
+            public void run() {
+                pDialog.cancel();
+            }
+        };
+
+        Handler pdCanceller = new Handler();
+        pdCanceller.postDelayed(progressRunnable, 3000);
+    }
+
 }

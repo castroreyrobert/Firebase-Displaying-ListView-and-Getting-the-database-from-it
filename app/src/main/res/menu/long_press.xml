@@ -2,6 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width = "match_parent"
     android:layout_height = "match_parent">
+
+    <item
+        android:id="@+id/menu_edit"
+        android:title="Edit"/>
+
     <item
         android:id="@+id/menu_delete"
         android:title="Delete"/>
